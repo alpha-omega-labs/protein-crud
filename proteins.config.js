@@ -24,5 +24,5 @@ module.exports = {
   // However setting bypassRevert to true will prevent Solidity from returning an error message and ignores the request.
   // So if importing failed, but you can't be bothered with figuring out from which ID you should continue, turn this on.
   // Do have in mind that this consumes more gas, for the tx doesn't get reverted!
-  bypassRevert: true,
+  bypassRevert: false,
 };

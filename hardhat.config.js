@@ -3,7 +3,15 @@ const { getProteinContract } = require("./helpers/web3");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.12",
+  solidity: {
+    version: "0.8.12",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
   defaultNetwork: "localhost",
   networks: {
     hardhat: { gas: 2000000000, blockGasLimit: 2000000000 },

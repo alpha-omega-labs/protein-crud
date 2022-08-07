@@ -22,6 +22,7 @@ async function main() {
         batch.map((protein) => protein.nftId),
         batch.map((protein) => protein.id),
         batch.map((protein) => protein.sequence),
+        batch.map((protein) => protein.ipfs),
         bypassRevert
       );
 
