@@ -10,7 +10,17 @@ import "../node_modules/hardhat/console.sol";
 
 
 contract ProteinQuery is ProteinCrud, SeedCrud {
-  
+  string[20] aminoAcids;
+
+  constructor() {
+    aminoAcids = [
+        "A", "R", "N", "D", 
+        "C", "Q", "E", "G", 
+        "H", "I", "L", "K", 
+        "M", "F", "P", "S", 
+        "T", "W", "Y", "V"];
+  }
+
   /* QUERYING (NAIVE APPROACH) */
 
   // The naive approach of querying. Works okay with smaller datasets, but takes a lot of time when it has to go through a bunch of sequences.
@@ -55,13 +65,12 @@ contract ProteinQuery is ProteinCrud, SeedCrud {
   // 1. Split the query in short w-sized pieces.
   // 2. Look where these w-sized pieces could be found in all of our sequences (using a precomputed lookup table, see: SeedCrud.sol or ./datasets/seeds/ on our GitHub.)
   // 3. Puzzle the w-sized pieces back together and return only the proteins that successfully match our queried string.
-  // TODO: handle queries shorter than the seed size
-  // TODO: Add the querying of id's.
+  // TODO: Add the querying of id's and exclusive queries.
   function semiBlastQuery(string memory sequenceQuery) public view returns(ProteinStruct[] memory proteins, uint proteinsFound) {
     require(seedIndex.length > 0, "In order to query in this manner, seeds have to be inserted first.");
     
     if(bytes(sequenceQuery).length < seedSize) {
-      //when the queried sequence is shorter than the seedSize
+      (proteins, proteinsFound) = querySmallWords(sequenceQuery);
     } else {
       (string[] memory splittedQuery, uint seedTailSize) = splitWord(sequenceQuery, seedSize, seedStep, true);
       SeedPositionStruct[][] memory positions = getAllSeedPositions(splittedQuery);
@@ -69,6 +78,48 @@ contract ProteinQuery is ProteinCrud, SeedCrud {
     }
 
     return (proteins, proteinsFound);
+  }
+
+  function querySmallWords(string memory smallQuery) internal view returns(ProteinStruct[] memory proteins, uint proteinsFound) {
+    require(bytes(smallQuery).length < seedSize, "The query must be smaller than the seed size for this to work.");
+
+    uint seedDifference = seedSize - bytes(smallQuery).length;
+
+    uint aminoCount = aminoAcids.length**seedDifference;
+    uint firstAminoNumber = seedDifference == 1 ? 1 : (aminoCount/aminoAcids.length + 1);
+    
+    SeedPositionStruct[][] memory positions = new SeedPositionStruct[][](aminoCount * 2);
+    uint positionsPointer;
+
+    ProteinStruct[] memory _proteins = new ProteinStruct[](proteinIndex.length);
+    bool[] memory addedProteins = new bool[](proteinIndex.length);
+
+    for(uint i = firstAminoNumber; i < aminoCount + firstAminoNumber; i++) {
+      string memory seed;
+      string memory amino = numberToAmino(i);
+
+      seed = string.concat(amino, smallQuery);
+      positions[positionsPointer] = getSeedPositions(seed);
+      positionsPointer++;
+
+      seed = string.concat(smallQuery, amino);
+      positions[positionsPointer] = getSeedPositions(seed);
+      positionsPointer++;
+
+      for (uint j = positionsPointer - 2; j < positionsPointer; j++) {
+        for(uint k = 0; k < positions[j].length; k++) {
+          uint nftId = positions[j][k].nftId;
+          if (addedProteins[nftId - 1]) continue;
+
+          _proteins[proteinsFound] = proteinStructs[nftId];
+          proteinsFound++;
+
+          addedProteins[nftId - 1] = true;
+        }
+      }
+    }
+
+    proteins = resizeProteinStructArray(_proteins, proteins, proteinsFound);
   }
 
   function puzzleSeedPositions(SeedPositionStruct[][] memory positions, uint seedTailOverlap) 
@@ -94,14 +145,14 @@ contract ProteinQuery is ProteinCrud, SeedCrud {
         for(uint k = 0; k < positions[j].length; k++) {
           SeedPositionStruct memory currentSeedPosition = positions[j][k];
 
-          // Again, if the NFT has already been added, skip.
+          // Again, if the protein was already added, skip.
           // Also treat this round as a mismatch.
           if(addedProteins[currentSeedPosition.nftId - 1]) {
             mismatchCounter[i]++;   
             continue;
           } 
 
-          // if nftId's match AND previous position + seedStep equals the current position, then we have a match.
+          // if nftId's match AND (previous position + seedStep) equals the current position, then we have a match.
           // However, there's an exception to this rule at the last seed, for this word may overlap with the second last word.
           // See splitWord in QueryHelpers.sol for more information. Particularly the 'forceSize' parameter.
           if(nftId == currentSeedPosition.nftId && 
@@ -143,5 +194,13 @@ contract ProteinQuery is ProteinCrud, SeedCrud {
     }
 
     return _to;
+  }
+
+  function numberToAmino(uint number) public view returns(string memory amino) {
+    while (number > 0) {
+      uint t = (number - 1) % aminoAcids.length;
+      amino = string.concat(aminoAcids[t], amino);
+      number = (number - t) / aminoAcids.length;
+    }
   }
 }

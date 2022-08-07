@@ -19,7 +19,7 @@ Now after having a node up and running we'll have to deploy our contract using <
 After deploying, add the contract address to the <b>proteins.config.js</b> in the root folder, assign the address to the key named <b>contractAddress</b>.
 
 ### 4. Adding the Proteins
-So our contract's deployed, we now just have to add our proteins to the contract's storage. The script <b>addProteins.js</b> will help with this. It's a simple Javascript that reads data from a <b>.txt file</b> located in the <b>datasets</b>-folder. These files contain the first n proteins from the Genesis L1 dataset (https://molnft.org/), where 104059 is the file containing all proteins. Change which dataset size you wish to use by editing this in the <b>proteins.config.js</b> file.
+So our contract's deployed, we now just have to add our proteins to the contract's storage. The script <b>addProteins.js</b> will help with this. It's a simple Javascript that reads data from a <b>.txt file</b> located in the <b>datasets</b>-folder. These files contain the first n proteins from the Genesis L1 dataset (https://datasetnft.org/), where 104059 is the file containing all proteins. Change which dataset size you wish to use by editing this in the <b>proteins.config.js</b> file.
 </br>
 </br>
 Use: <code>npx hardhat run scripts/insertProteins.js</code> to run the script.
