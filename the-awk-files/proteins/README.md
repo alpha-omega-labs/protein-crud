@@ -1,13 +1,14 @@
 ## Proteins AWK
-
 This will generate the protein structs as seen in the ./datasets/proteins folder.
 
-Apply the awk in this folder to the nfts.input file in the parent folder (../nfts.input).
-`awk -f proteins.awk ../nfts.input`
+## Getting started
+Apply the awk in this folder to the nfts.input file in the parent folder.
+</br>e.g. this will generate 1000 proteins per .txt file:
+</br>`awk -v max=1000 -f proteins.awk ../nft.input`
 
-You could also change the amount of proteins per file by adding a `max` variable to the awk.
+### Variables
 
-This example will generate 1000 proteins per .txt file.
-`awk -v max=1000 -f proteins.awk ../nft.input`
+- `max`: changes the amount of proteins per file. Default `1400`.
 
-The result can be found in the output-folder.
+### Result
+The resulting .txt files can be found in the output-folder.
