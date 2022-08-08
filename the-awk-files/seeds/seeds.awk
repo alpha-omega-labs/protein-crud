@@ -27,7 +27,7 @@ BEGIN{
     l["X"] = 23;
     l["U"] = 24;
     
-    seed_size=w ? w : 4;
+    seed_size=w ? w : 3;
     base_length= base ? base : 20;
     maxNFT = max ? max : 1400;
     nft_id=1;
@@ -39,7 +39,29 @@ BEGIN{
     system("mkdir seed_size_"seed_size""(unique_id==1 ? "_unique" : "")" 2>&-");
 } 
 
+# from https://unix.stackexchange.com/questions/609866/regular-awk-easily-sort-array-indexes-to-output-them-in-the-chosen-order
+function sort_array(arr, idxs, args, i, str, cmd) {
+    for (i in arr) {
+        gsub(/\047/, "\047\\\047\047", i)
+        str = str i ORS
+    }
+
+    cmd = "printf \047%s\047 \047" str "\047 |sort " args
+
+    i = 0
+    while ( (cmd | getline idx) > 0 ) {
+        idxs[++i] = idx
+    }
+
+    close(cmd)
+
+    return i
+}
+
 function print_result() {    
+    output_folder = "./seed_size_"seed_size""(unique_id==1 ? "_unique" : "");
+    output_file = output_folder"/seed_"seed_size"_structs_"max"_"indexer".txt";
+
     if(unique_id) {
         total_length=(base_length)^(seed_size);
         arr_str = "[";
@@ -48,27 +70,34 @@ function print_result() {
             arr_str=arr_str"["arr[y]"]"; 
             
             if(y != (total_length - 1)) {
-                arr_str=arr_str","(no_newline==1? "" : "\n")
+                arr_str=arr_str","
             }
-        
         }
 
         arr_str=arr_str"]";
+        print arr_str > output_file;
     } else {
-        arr_str = "{";
-        
-        n = asorti(arr, destination);
-        for (i = 1; i <= n; i++) {
-            seed_k = destination[i];
-            arr_str=arr_str""(arr_str != "{" ? "," : "")""(no_newline==1? "" : "\n")"\""seed_k"\":["arr[seed_k]"]"; 
+        if(no_sort) {
+            seed_count = 1;
+            n = length(arr);
+
+            for (seed_k in arr) {
+                arr_str=(seed_count == 1 ? "{" : "")"\""seed_k"\":["arr[seed_k]"]"(seed_count < n ? "," : "}"); 
+                print arr_str > output_file;
+                seed_count++;
+            }
+        } else {
+            n = sort_array(arr, destination);
+
+            for (i = 1; i <= n; i++) {
+                seed_k = destination[i];
+                arr_str=(i == 1 ? "{" : "")"\""seed_k"\":["arr[seed_k]"]"(i < n ? "," : "}"); 
+                print arr_str > output_file;
+            }
         }
 
-        arr_str=arr_str"}";
     }
     
-    output_folder = "./seed_size_"seed_size""(unique_id==1 ? "_unique" : "");
-    print arr_str > output_folder"/seed_size_"seed_size"_indexer_"indexer".txt";
-
     delete arr;
     indexer_pointer=0;
     counter = 0;
