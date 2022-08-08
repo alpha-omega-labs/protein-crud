@@ -26,6 +26,32 @@ BEGIN{
     l["Z"] = 22;
     l["X"] = 23;
     l["U"] = 24;
+
+    amino_acid[0] = "A";
+    amino_acid[1] = "C";
+    amino_acid[2] = "D";
+    amino_acid[3] = "E";
+    amino_acid[4] = "F";
+    amino_acid[5] = "G";
+    amino_acid[6] = "H";
+    amino_acid[7] = "I";
+    amino_acid[8] = "K";
+    amino_acid[9] = "L";
+    amino_acid[10] = "M";
+    amino_acid[11] = "N";
+    amino_acid[12] = "P";
+    amino_acid[13] = "Q";
+    amino_acid[14] = "R";
+    amino_acid[15] = "S";
+    amino_acid[16] = "T";
+    amino_acid[17] = "V";
+    amino_acid[18] = "W";
+    amino_acid[19] = "Y";
+    amino_acid[20] = "B";
+    amino_acid[21] = "J";
+    amino_acid[22] = "U";
+    amino_acid[23] = "X";
+    amino_acid[24] = "Z";
     
     seed_size=w ? w : 3;
     base_length= base ? base : 20;
@@ -37,25 +63,38 @@ BEGIN{
     indexer_pointer=0;
 
     system("mkdir seed_size_"seed_size""(unique_id==1 ? "_unique" : "")" 2>&-");
+
+    amino_start=amino_start_number(seed_size);
+    amino_end=base_length**seed_size + amino_start;
+    amino_count=1;
+
+    for(i = amino_start; i < amino_end; i++) {
+        amino_sorted[amino_count] = number_to_amino(i);
+        amino_count++;
+    }
 } 
 
-# from https://unix.stackexchange.com/questions/609866/regular-awk-easily-sort-array-indexes-to-output-them-in-the-chosen-order
-function sort_array(arr, idxs, args, i, str, cmd) {
-    for (i in arr) {
-        gsub(/\047/, "\047\\\047\047", i)
-        str = str i ORS
+function amino_start_number(word_size) {
+    start_value = 0;
+
+    while(word_size != 0) {
+      word_size--;
+      start_value = start_value + (base_length**(word_size));
     }
 
-    cmd = "printf \047%s\047 \047" str "\047 |sort " args
+    return start_value;
+}
 
-    i = 0
-    while ( (cmd | getline idx) > 0 ) {
-        idxs[++i] = idx
+function number_to_amino(number) {
+    amino="";
+
+    while (number > 0) {
+      t = (number - 1) % base_length;
+      amino = amino_acid[t]""amino;
+      number = int((number - t) / base_length);
     }
 
-    close(cmd)
-
-    return i
+    return amino;
 }
 
 function print_result() {    
@@ -87,12 +126,19 @@ function print_result() {
                 seed_count++;
             }
         } else {
-            n = sort_array(arr, destination);
+            n = length(arr);
+            seed_count = 0;
 
-            for (i = 1; i <= n; i++) {
-                seed_k = destination[i];
-                arr_str=(i == 1 ? "{" : "")"\""seed_k"\":["arr[seed_k]"]"(i < n ? "," : "}"); 
-                print arr_str > output_file;
+            for(i = 1; i <= amino_count; i++) {
+                seed_k=amino_sorted[i];
+                seed_exists = arr[seed_k];
+
+                if(seed_exists || seed_count >= n) seed_count++;
+
+                last_round = seed_count == n;
+
+                arr_str=(i == 1 ? "{" : "")(seed_exists ? "\""seed_k"\":["arr[seed_k]"]" : "")(seed_count < n && seed_exists ? "," : "")(last_round ? "}" : ""); 
+                if(seed_exists || last_round) print arr_str > output_file;
             }
         }
 
