@@ -11,7 +11,7 @@ import "../node_modules/hardhat/console.sol";
 
 contract ProteinQuery is ProteinCrud, SeedCrud {
   string[20] aminoAcids;
-
+  
   constructor() {
     aminoAcids = [
         "A", "R", "N", "D", 
@@ -67,9 +67,11 @@ contract ProteinQuery is ProteinCrud, SeedCrud {
   // 3. Puzzle the w-sized pieces back together and return only the proteins that successfully match our queried string.
   // TODO: Add the querying of id's and exclusive queries.
   function semiBlastQuery(string memory sequenceQuery) public view returns(ProteinStruct[] memory proteins, uint proteinsFound) {
+    uint wordSize = bytes(sequenceQuery).length;
+    require(wordSize != 0, "Query can't be empty.");
     require(seedIndex.length > 0, "In order to query in this manner, seeds have to be inserted first.");
     
-    if(bytes(sequenceQuery).length < seedSize) {
+    if(wordSize < seedSize) {
       (proteins, proteinsFound) = querySmallWords(sequenceQuery);
     } else {
       (string[] memory splittedQuery, uint seedTailSize) = splitWord(sequenceQuery, seedSize, seedStep, true);
@@ -86,7 +88,7 @@ contract ProteinQuery is ProteinCrud, SeedCrud {
     uint seedDifference = seedSize - bytes(smallQuery).length;
 
     uint aminoCount = aminoAcids.length**seedDifference;
-    uint firstAminoNumber = seedDifference == 1 ? 1 : (aminoCount/aminoAcids.length + 1);
+    uint firstAminoNumber = aminoStartNumber(seedDifference);
     
     SeedPositionStruct[][] memory positions = new SeedPositionStruct[][](aminoCount * 2);
     uint positionsPointer;
@@ -201,6 +203,13 @@ contract ProteinQuery is ProteinCrud, SeedCrud {
       uint t = (number - 1) % aminoAcids.length;
       amino = string.concat(aminoAcids[t], amino);
       number = (number - t) / aminoAcids.length;
+    }
+  }
+
+  function aminoStartNumber(uint wordSize) internal view returns(uint start) {
+    while(wordSize != 0) {
+      wordSize--;
+      start = start + (aminoAcids.length**wordSize);
     }
   }
 }

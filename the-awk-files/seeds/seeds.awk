@@ -137,7 +137,7 @@ function print_result() {
 
                 last_round = seed_count == n;
 
-                arr_str=(i == 1 ? "{" : "")(seed_exists ? "\""seed_k"\":["arr[seed_k]"]" : "")(seed_count < n && seed_exists ? "," : "")(last_round ? "}" : ""); 
+                arr_str=(seed_count == 1 ? "{" : "")(seed_exists ? "\""seed_k"\":["arr[seed_k]"]" : "")(seed_count < n && seed_exists ? "," : "")(last_round ? "}" : ""); 
                 if(seed_exists || last_round) print arr_str > output_file;
             }
         }
@@ -149,10 +149,6 @@ function print_result() {
     counter = 0;
     indexer++;
 } 
-
-function print_to_file(str) {
-    print str > "./seed_size_"seed_size"/indexer_array"indexer".txt";
-}
 
 function letter_to_index(lett, ind) {
     return (base_length)^(seed_size - ind - 1) * l[lett];
@@ -202,6 +198,9 @@ NF{
         
         # print "INDEXER="indexer" NFTID="nft_id" NFT_INDEXER_INDEX="(nft_id-1)%maxNFT " NAME="name" SEED="seed" SEED_UNIQUE_NUMBER="seed_index " POS_IN_SEQUENCE="local_pointer" POS_IN_INDEXER_SEQUENCE="indexer_pointer > "./seed_size_"seed_size"/indexer_"indexer".txt";
         if(counter >= maxNFT) {
+            arr_printed++;
+            if(arr_printed == cap) exit;
+
             print_result();
         }
 
