@@ -1,4 +1,10 @@
-## SEMI-BLAST ERA
+## BIG DATA ERA
+
+#### 1.2.1 (2022-08-11)
+
+- Changed the delete mechanism for seed positions in CrudSeed.sol.
+- Added a insertManySeedPositions function in the contract and script insertManyPositions. This way we always add extra positions (USE WITH CAUTION!)
+- insertMany and insertManyPositions now show many positions each seed will add.
 
 #### 1.2.0 (2022-08-10)
 
@@ -9,6 +15,8 @@
 - Bugfixes.
 - Refactored and abstraction of code.
 - Config file changed alot.
+
+## SEMI-BLAST ERA
 
 #### 1.1.0 (2022-08-03)
 

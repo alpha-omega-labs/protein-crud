@@ -2,11 +2,11 @@
 
 const batchCrud = require("../../helpers/batchCrud");
 
-const { bypassRevert, manyScripts } = require("../../proteins.config");
+const { manyScripts } = require("../../proteins.config");
 
 async function main() {
   batchCrud(
-    manyScripts.files.seedsInsertMany,
+    manyScripts.files.seedsInsertManyPositions,
     manyScripts.seedsPerBatch,
     ["seed", "seeds"],
     async (contract, i, data, keys) => {
@@ -24,13 +24,12 @@ async function main() {
       });
       console.log();
 
-      const insertManySeeds = await contract.insertManySeeds(
+      const insertManySeedPositions = await contract.insertManySeedPositions(
         seeds,
-        seedsPositions,
-        bypassRevert
+        seedsPositions
       );
 
-      return insertManySeeds;
+      return insertManySeedPositions;
     }
   );
 }

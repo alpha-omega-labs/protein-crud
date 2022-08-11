@@ -29,7 +29,7 @@ contract CrudSeed is Owner {
     }
 
     // seedStructs[seed].seed = seed;
-    insertManySeedPositions(seed, positions);
+    insertSeedPositions(seed, positions);
     
     seedIndex.push(seed);
     seedStructs[seed].index = seedIndex.length - 1;
@@ -52,10 +52,18 @@ contract CrudSeed is Owner {
     seedStructs[seed].positions.push(position);
   }
 
-  function insertManySeedPositions(string memory seed, 
+  function insertSeedPositions(string memory seed, 
   Structs.SeedPositionStruct[] memory positions) private onlyAdmin {
     for(uint i = 0; i < positions.length; i++) {
       insertSeedPosition(seed, positions[i]);
+    }
+  }
+
+  function insertManySeedPositions(string[] memory seeds, 
+  Structs.SeedPositionStruct[][] memory positions) public onlyAdmin {
+    for(uint i = 0; i < seeds.length; i++) {
+      require(isSeed(seeds[i]), "Seed could not be found in the database.");
+      insertSeedPositions(seeds[i], positions[i]);
     }
   }
 
@@ -69,8 +77,9 @@ contract CrudSeed is Owner {
       require(exists, "Seed could not be found in the database."); 
     }
 
-    delete seedStructs[seed].positions;
-    insertManySeedPositions(seed, positions);
+    // delete seedStructs[seed].positions;
+    deleteSeedPositions(seed);
+    insertSeedPositions(seed, positions);
     
     Structs.SeedStruct memory _seedStruct = seedStructs[seed];
     emit LogUpdateSeed(seed, _seedStruct.index, _seedStruct.positions);
@@ -91,7 +100,8 @@ contract CrudSeed is Owner {
   public onlyOwner returns(uint seedsLeft) {
     if(hardDelete) {
       // seedStructs[seed].seed = "";
-      delete seedStructs[seed].positions;
+      // delete seedStructs[seed].positions;
+      deleteSeedPositions(seed);
     }
     
     bool exists = isSeed(seed);
@@ -137,6 +147,16 @@ contract CrudSeed is Owner {
     return seedIndex.length;
   }
 
+  function deleteSeedPositions(string memory seed) private onlyAdmin returns(uint seedPositionsLeft) {
+      uint _seedPositionsLength = seedStructs[seed].positions.length;
+
+      for(uint i = 0; i < _seedPositionsLength; i++) {
+        seedStructs[seed].positions.pop();
+      }
+    
+      return seedStructs[seed].positions.length;
+  }
+
   function isSeed(string memory seed) public view returns(bool isIndeed) {
     if(seedIndex.length == 0) return false;
 
@@ -161,11 +181,17 @@ contract CrudSeed is Owner {
     return seedStructs[seed].positions;
   }
 
-  function getManySeedPositions(string[] memory seeds) public view returns (Structs.SeedPositionStruct[][] memory positions) {
+  function getManySeedPositions(string[] memory seeds, bool returnOnEmpty) public view returns (Structs.SeedPositionStruct[][] memory positions, bool emptyFound) {
     positions = new Structs.SeedPositionStruct[][](seeds.length);
 
     for(uint i = 0; i < seeds.length; i++) {
       Structs.SeedPositionStruct[] memory _positions = getSeedPositions(seeds[i]);
+
+      if(returnOnEmpty && _positions.length == 0) {
+        emptyFound = true;
+        break;
+      }
+
       positions[i] = _positions;
     }
   }

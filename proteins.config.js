@@ -5,7 +5,7 @@ module.exports = {
       name: "TempQuery", //This is temporary, eventually this will be set to "Indexer" and Query will be a separate contract.
 
       //Which contract are we targeting with our scripts/tasks?
-      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      address: "0xB90AcF57C3BFE8e0E8215defc282B5F48b3edC74",
 
       //Commented out for now
       //   //Identifier for this indexer.
@@ -57,6 +57,9 @@ module.exports = {
       //Remember to always match the protein sizes with the seed sizes.
       proteinsInsertMany: "datasets/proteins/protein_structs_100.txt",
       seedsInsertMany: "datasets/seeds/seed_3_structs_100.txt",
+
+      //This allows us to add extra positions to (known) seeds! Useful if you need to add the seed's array in parts!
+      seedsInsertManyPositions: "datasets/seeds/",
 
       //when deleting, make sure to set this to the file you used for insertion!
       proteinsDeleteMany: "datasets/proteins/protein_structs_100.txt",

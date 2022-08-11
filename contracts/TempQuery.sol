@@ -77,8 +77,10 @@ contract TempQuery is CrudProtein, CrudSeed {
       (proteins, proteinsFound) = querySmallWords(sequenceQuery);
     } else {
       (string[] memory splittedQuery, uint seedTailSize) = sequenceQuery.fragment(seedSize, seedStep, true);
-      Structs.SeedPositionStruct[][] memory positions = getManySeedPositions(splittedQuery);
-      (proteins, proteinsFound) = puzzleSeedPositions(positions, seedSize - seedTailSize);
+      (Structs.SeedPositionStruct[][] memory positions, bool emptyFound) = getManySeedPositions(splittedQuery, true);
+      
+      if(!emptyFound) 
+        (proteins, proteinsFound) = puzzleSeedPositions(positions, seedSize - seedTailSize);
     }
 
     return (proteins, proteinsFound);
