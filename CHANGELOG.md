@@ -1,5 +1,19 @@
 ## SEMI-BLAST ERA
+
+#### 1.2.0 (2022-08-10)
+
+- Created libraries instead of heaping everything into one contract.
+- Contract use case separated (Indexers, Query contract, etc.).
+- Deletion for the CRUDs fixed and optimized.
+- Various scripts created and renamed.
+- Bugfixes.
+- Refactored and abstraction of code.
+- Config file changed alot.
+
 #### 1.1.0 (2022-08-03)
+
+- Added The AWK Files.
+- Added the ability to query smaller words.
 
 - MAJOR IMPROVEMENT: An algorithm inspired by the blast protocol has been implemented; massively improving the speed for our queries. It has a similar approach of cutting all sequences into short segments and puzzling them together, but we only return the segments matching the queried string exactly. Unlike blast, where we use a scoring matrix to 'judge' a fragment, or where (some versions) allow for gaps to be present in-between seeds. The drawback with this semi-blast approach is that we discard every sequence that isn't an exact match with our query, while blast could also included similar proteins in its search results (if they score an E-value above a certain threshold). This will probably be implemented at some point in the future.
 - A CRUD for Seeds has been added. This enables us to store all possible n-sized segments available in our imported proteins (where n = a small number like 3, 4, 5 or 6). Currently it only has been tested with 3 letter words, but ideally a longer word would improve the algorithm's speed (in exchange for storage space).
@@ -19,6 +33,7 @@
 - Updated README.md.
 
 ## NAIVE ERA
+
 #### 1.0.2 (2022-08-02)
 
 - Created an insertProteins function in the ProteinCrud contract, we can now add multiple proteins at once.

@@ -46,4 +46,4 @@ contract Owner {
   function removeAdmin(address _address) public onlyOwner {
     admins[_address] = false;
   }
-}
+} 

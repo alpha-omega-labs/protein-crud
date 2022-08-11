@@ -1,24 +1,22 @@
 //Created by Tousuke (zenodeapp - https://github.com/zenodeapp/protein-crud).
 
-const insertion = require("../helpers/insertion");
+const batchCrud = require("../../helpers/batchCrud");
 
-const {
-  totalProteinAmount,
-  proteinsPerBatch,
-  bypassRevert,
-} = require("../proteins.config");
+const { bypassRevert, manyScripts } = require("../../proteins.config");
 
 async function main() {
-  insertion(
-    `datasets/proteins/protein_structs_${totalProteinAmount}.txt`,
-    proteinsPerBatch,
-    "protein",
+  batchCrud(
+    manyScripts.files.proteinsInsertMany,
+    manyScripts.proteinsPerBatch,
+    ["protein", "proteins"],
     async (contract, i, data) => {
       const batch = data.filter(
-        (_, j) => j >= i * proteinsPerBatch && j < (i + 1) * proteinsPerBatch
+        (_, j) =>
+          j >= i * manyScripts.proteinsPerBatch &&
+          j < (i + 1) * manyScripts.proteinsPerBatch
       );
 
-      const insertProteins = await contract.insertProteins(
+      const insertManyProteins = await contract.insertManyProteins(
         batch.map((protein) => protein.nftId),
         batch.map((protein) => protein.id),
         batch.map((protein) => protein.sequence),
@@ -26,7 +24,7 @@ async function main() {
         bypassRevert
       );
 
-      return insertProteins;
+      return insertManyProteins;
     }
   );
 }
