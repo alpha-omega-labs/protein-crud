@@ -129,10 +129,12 @@ function print_result() {
             n = length(arr);
             seed_count = 0;
 
+            # We traverse all possible amino permutations. amino_count is the amount of possible amino permutations.
             for(i = 1; i <= amino_count; i++) {
                 seed_k=amino_sorted[i];
                 seed_exists = arr[seed_k];
 
+                # This means we found an amino permutation that actually exists. seed_count keeps track of this.
                 if(seed_exists || seed_count >= n) seed_count++;
 
                 last_round = seed_count == n;
