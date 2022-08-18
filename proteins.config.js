@@ -1,46 +1,49 @@
 module.exports = {
   contracts: {
-    indexer: {
+    indexerProtein: {
       // The name of the contract for deployment.
-      name: "TempQuery", //This is temporary, eventually this will be set to "Indexer" and Query will be a separate contract.
+      name: "IndexerProtein",
 
-      //Which contract are we targeting with our scripts/tasks?
-      address: "0xB90AcF57C3BFE8e0E8215defc282B5F48b3edC74",
+      //Which contract are we targeting for our protein scripts/tasks?
+      address: "",
 
-      //Commented out for now
-      //   //Identifier for this indexer.
-      //   indexerId: 1,
-
-      //   //Is stored to inform us what seedSize this indexer will contain.
-      //   seedSize: 3,
+      //Group name where this indexer belongs to.
+      indexerGroup: "Homo Sapiens",
+      //Number in the group.
+      indexerId: 1,
     },
 
-    //Work in progress
-    // query: {
-    //   name: "Query",
-    //   address: "",
+    indexerSeed: {
+      // The name of the contract for deployment.
+      name: "IndexerSeed",
 
-    //   //list of indexers this Query contract should be initialized with.
-    //   //NOTE: it's not necessary to do this.
-    //   indexers: [
-    //     {
-    //       seedSize: 3,
-    //       addresses: [],
-    //     },
-    //   ],
-    // },
-  },
+      ///Which contract are we targeting for our seed scripts/tasks?
+      address: "",
 
-  // Libraries are only supposed to be deployed once.
-  // Fill out the library's address to prevent the deploy.js script from redeploying.
-  libraries: {
-    strings: {
-      name: "Strings",
+      //Group name where this indexer belongs to.
+      indexerGroup: "Homo Sapiens",
+      //Number in the group.
+      indexerId: 1,
+      //This is stored to inform us what seedSize this indexer will contain.
+      seedSize: 3,
+    },
+
+    queryNaive: {
+      name: "QueryNaive",
       address: "",
     },
 
-    structs: {
-      name: "Structs",
+    querySemiBlast: {
+      name: "QuerySemiBlast",
+      address: "",
+    },
+  },
+
+  // Libraries are only supposed to be deployed once.
+  // Fill out the library's address to prevent the scripts to redeploy.
+  libraries: {
+    strings: {
+      name: "Strings",
       address: "",
     },
   },
@@ -68,6 +71,14 @@ module.exports = {
       proteinsUpdateMany: "datasets/proteins/protein_structs_100.txt",
       seedsUpdateMany: "datasets/seeds/seed_3_structs_100.txt",
     },
+  },
+
+  queryOptions: {
+    defaultLimit: 0,
+    defaultCaseSensitivity: false,
+    defaultSeedSize: 3, //Only for semi-blast
+    defaultUnion: false, //Currently only for the naive algorithm
+    defaultFormat: "protein", //Possible values: "protein", "id", "nft", "sequence" or "ipfs".
   },
 
   // Normally, inserting the same protein or seed twice would revert the tx, returning an error stating it already exists.

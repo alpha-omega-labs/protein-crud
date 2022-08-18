@@ -1,11 +1,14 @@
 //Created by Tousuke (zenodeapp - https://github.com/zenodeapp/protein-crud).
 
 const batchCrud = require("../../helpers/batchCrud");
+const { getIndexerProteinContract } = require("../../helpers/web3");
 
 const { bypassRevert, manyScripts } = require("../../proteins.config");
+const hre = require("hardhat");
 
 async function main() {
   batchCrud(
+    await getIndexerProteinContract(hre),
     manyScripts.files.proteinsInsertMany,
     manyScripts.proteinsPerBatch,
     ["protein", "proteins"],

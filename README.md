@@ -1,5 +1,4 @@
-# Protein CRUD
-
+# Protein CRUD (This readme is outdated!)
 A basic CRUD for Proteins with string query functionality.
 
 This has been built within the Hardhat environment and is merely a basis for querying protein sequences and PDBID/ACCESSIONs.
@@ -42,7 +41,7 @@ To run this task, use:
 OR
 </br>
 </br>
-<code>npx hardhat semiBlastQuery --sequence "your_sequence_query"</code> <i>alot faster!</i>
+<code>npx hardhat semiBlastQuery --sequence "your_sequence_query" --casesensitive "true/false"</code> <i>alot faster!</i>
 
 #### 5.1 Flags
 All flags are optional. So if you want to, let's say, only search for id's containing "1A", you'd only set the flag <code>--id</code> to <code>"1A"</code>. If you wanted to search for sequences containing "AAA" but also contain "1A" in its id, you'd have to set both flags to the corresponding values AND set <code>--exclusive</code> to <code>"true"</code>. This, because a value of <code>"false"</code> would return all sequences that match "AAA" AND all sequences that have a id containing "1A", while in this particular case we'd only want the values where both queries are true.
@@ -64,7 +63,7 @@ So, for instance, getting the sequence of the third protein in the returned valu
 
 ## Remarks
 - ~~Solidity is not the most optimal when it comes to handling strings. Especially when it comes to larger strings. Therefore ideas like pre-processing the database and storing smaller segments are possible routes to explore to get this working faster (which I'm currently working on).~~ - included since version 1.1.0.
-- The searches are <i>case-sensitive</i> at the moment. This could be solved upon insertion of the proteins (but would discard whether the letters were lower or uppercase) or solved by adding an extra toLowerCase function in Solidity. But then again, Solidity is not optimal for string manipulation and this would degrade performance.
+- ~~The searches are <i>case-sensitive</i> at the moment. This could be solved upon insertion of the proteins (but would discard whether the letters were lower or uppercase) or solved by adding an extra toLowerCase function in Solidity. But then again, Solidity is not optimal for string manipulation and this would degrade performance.~~ - included since version 1.2.2.
 - There's a limitation in Solidity where `memory arrays` can't be dynamic in size. And since we cannot know beforehand how many results a query will have, we temporarily store the results in an array of size n, with n = the total amount of proteins. To prevent returning an array with a bunch of empty values, we copy the query results, in the temporary array, to a smaller sized array in the last line of the <i>naiveQuery</i> function. But, ofcourse this is an extra step, degrading the speed of our queries. More info about this issue can be found in the contract.
 </br>
 </br>

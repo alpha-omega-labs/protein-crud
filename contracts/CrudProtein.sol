@@ -26,6 +26,7 @@ contract CrudProtein is Owner {
       require(!exists, "This nft already exists and can't be inserted twice. Update its properties instead.");
     }
 
+    proteinStructs[nftId].nftId = nftId;
     proteinStructs[nftId].id = id;
     proteinStructs[nftId].sequence = sequence;
     proteinStructs[nftId].ipfsHash = ipfsHash;
@@ -57,6 +58,7 @@ contract CrudProtein is Owner {
       require(exists, "NFT ID could not be found in the database.");
     }
     
+    proteinStructs[nftId].nftId = nftId;
     proteinStructs[nftId].id = id;
     proteinStructs[nftId].sequence = sequence;
     proteinStructs[nftId].ipfsHash = ipfsHash;
@@ -78,6 +80,7 @@ contract CrudProtein is Owner {
   // Hard deletion will also reset all values inserted in the protein structs. This is costly and not necessary.
   function deleteProtein(uint nftId, bool hardDelete, bool bypassRevert) public onlyAdmin returns(uint proteinsLeft) {
     if(hardDelete) {
+      proteinStructs[nftId].nftId = 0;
       proteinStructs[nftId].sequence = "";
       proteinStructs[nftId].id = "";
       proteinStructs[nftId].ipfsHash = "";
@@ -133,11 +136,12 @@ contract CrudProtein is Owner {
     return (proteinIndex[proteinStructs[nftId].index] == nftId);
   }
 
-  function getProtein(uint nftId) public view returns(string memory id, string memory sequence, string memory ipfsHash, uint index) {
-    require(isProtein(nftId), "NFT ID could not be found in the database."); 
+  function getProtein(uint _nftId) public view returns(uint nftId, string memory id, string memory sequence, string memory ipfsHash, uint index) {
+    require(isProtein(_nftId), "NFT ID could not be found in the database."); 
 
-    Structs.ProteinStruct memory _proteinStruct = proteinStructs[nftId];
+    Structs.ProteinStruct memory _proteinStruct = proteinStructs[_nftId];
     return(
+      _proteinStruct.nftId, 
       _proteinStruct.id, 
       _proteinStruct.sequence,
       _proteinStruct.ipfsHash,
@@ -146,6 +150,50 @@ contract CrudProtein is Owner {
 
   function getProteinStruct(uint nftId) public view returns(Structs.ProteinStruct memory proteinStruct) {
     return proteinStructs[nftId];
+  }
+
+  function getProteinStructAtIndex(uint index) public view returns(Structs.ProteinStruct memory proteinStruct) {
+    return proteinStructs[proteinIndex[index]];
+  }
+
+  function getManyProteinStructs(uint[] memory nftIds) public view returns(Structs.ProteinStruct[] memory proteins) {
+    proteins = new Structs.ProteinStruct[](nftIds.length);
+
+    for(uint i = 0; i < nftIds.length; i++) {
+      proteins[i] = getProteinStruct(nftIds[i]);
+    }
+  }
+
+  function getAllProteinStructs() public view returns(Structs.ProteinStruct[] memory _proteinStructs) {
+    _proteinStructs = new Structs.ProteinStruct[](proteinIndex.length);
+
+    for(uint i = 0; i < proteinIndex.length; i++) {
+      _proteinStructs[i] = getProteinStruct(proteinIndex[i]);
+    }
+  }
+
+  function getManyProteinIds(uint[] memory nftIds) public view returns(string[] memory ids) {
+    ids = new string[](nftIds.length);
+
+    for(uint i = 0; i < nftIds.length; i++) {
+      ids[i] = getProteinStruct(nftIds[i]).id;
+    }
+  }
+
+  function getManyProteinSequences(uint[] memory nftIds) public view returns(string[] memory sequences) {
+    sequences = new string[](nftIds.length);
+
+    for(uint i = 0; i < nftIds.length; i++) {
+      sequences[i] = getProteinStruct(nftIds[i]).sequence;
+    }
+  }
+
+  function getManyProteinIpfsHashes(uint[] memory nftIds) public view returns(string[] memory ipfsHashes) {
+    ipfsHashes = new string[](nftIds.length);
+
+    for(uint i = 0; i < nftIds.length; i++) {
+      ipfsHashes[i] = getProteinStruct(nftIds[i]).ipfsHash;
+    }
   }
 
   function getProteinCount() public view returns(uint count) {

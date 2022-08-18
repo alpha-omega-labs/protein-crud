@@ -5,7 +5,7 @@ pragma solidity ^0.8.12;
 
 library Structs {
   struct ProteinStruct {
-    // uint nftId;
+    uint nftId;
     string id;
     string sequence;
     string ipfsHash;
@@ -13,7 +13,7 @@ library Structs {
   }
 
   struct SeedStruct {
-    // string seed;
+    string seed;
     SeedPositionStruct[] positions;
     uint index;
   }
@@ -21,6 +21,37 @@ library Structs {
   struct SeedPositionStruct {
     uint nftId;
     uint position;
+  }
+
+  // For instance an indexer group: 'Homo Sapiens', with an ID of 2 would be the second Indexer for this protein type.
+  struct IndexerStruct {
+    string group;
+    uint id;
+  }
+
+  struct QueryOutputNftIds {
+    uint[] nftIds;
+    uint proteinCount;
+  }
+
+  struct QueryOutputSequences {
+    string[] sequences;
+    uint proteinCount;
+  }
+
+  struct QueryOutputIds {
+    string[] ids;
+    uint proteinCount;
+  }
+
+  struct QueryOutputIpfsHashes {
+    string[] ipfsHashes;
+    uint proteinCount;
+  }
+
+  struct QueryOutputProteinStructs {
+    Structs.ProteinStruct[] proteins;
+    uint proteinCount;
   }
 
   //This function allows us to resize ProteinStruct arrays to appropriate lengths by copying data to a new sized array.

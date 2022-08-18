@@ -1,10 +1,9 @@
 //Created by Tousuke (zenodeapp - https://github.com/zenodeapp/protein-crud).
 
 const fs = require("fs/promises");
-const { getIndexerContract } = require("./web3");
 const { reportBatchStart, reportBatch, reportGas } = require("./reporter");
 
-module.exports = async (file, batchSize, words, callback) => {
+module.exports = async (contract, file, batchSize, words, callback) => {
   const res = await fs.readFile(file, { encoding: "utf8" });
 
   const data = JSON.parse(res);
@@ -12,8 +11,6 @@ module.exports = async (file, batchSize, words, callback) => {
   const dataLength = keys.length;
 
   const amountTransactions = reportBatchStart(dataLength, batchSize, words);
-
-  const contract = await getIndexerContract(hre);
 
   console.time("timer");
   let totalGas = 0;
