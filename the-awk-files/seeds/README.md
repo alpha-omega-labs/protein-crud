@@ -6,7 +6,7 @@ This will generate the seed structs as seen in the ./datasets/seeds folder.
 
 Apply the awk in this folder to the nfts.input file in the parent folder.
 </br>e.g. this will generate 1000 seeds with a seed size of 4 per .txt file:
-</br>`awk -v w=4 -v max=1000 -f seeds.awk ../nft.input`
+</br>`awk -v w=4 -v max=1000 -f seeds.awk ../nfts.input`
 </br>
 </br>
 

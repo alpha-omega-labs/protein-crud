@@ -46,6 +46,10 @@ module.exports = {
       name: "Strings",
       address: "",
     },
+    structs: {
+      name: "Structs",
+      address: "",
+    },
   },
 
   manyScripts: {
@@ -55,14 +59,18 @@ module.exports = {
     // How many seeds will we insert/delete per transaction
     seedsPerBatch: 20,
 
+    // How many wildcards will we insert/delete per transaction
+    wildcardsPerBatch: 50,
+
     // Check the ./datasets folder to see which dataset sizes are available.
     files: {
       //Remember to always match the protein sizes with the seed sizes.
       proteinsInsertMany: "datasets/proteins/protein_structs_100.txt",
       seedsInsertMany: "datasets/seeds/seed_3_structs_100.txt",
+      wildcardsInsertMany: "datasets/wildcards/wildcard_3_structs_100.txt",
 
       //This allows us to add extra positions to (known) seeds! Useful if you need to add the seed's array in parts!
-      seedsInsertManyPositions: "datasets/seeds/",
+      seedsAppendManyPositions: "datasets/seeds/",
 
       //when deleting, make sure to set this to the file you used for insertion!
       proteinsDeleteMany: "datasets/proteins/protein_structs_100.txt",

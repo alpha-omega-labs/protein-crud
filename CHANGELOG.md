@@ -1,5 +1,22 @@
 ## BIG DATA ERA
 
+#### 1.2.6 (2022-08-21)
+
+- QuerySemiBlast.sol now uses Quicksort to first found out which three letter word is the smallest (issue #12)
+- Fixed the incorrect query result issue with \*\*\*'s (issue #20).
+
+#### 1.2.5 (2022-08-20)
+
+- Fixed issue #1 (query small words) again using wildcards.
+- Semi-blast now supports \*-wildcards (issue #17), it does contain a bug (issue #20).
+- Added wildcards awk files and datasets.
+- Created two functions in IndexerSeed.sol for obtaining all positions, but these should actually be added in QuerySemiBlast.sol instead.
+
+#### 1.2.4 (2022-08-19)
+
+- Fixed soft-deleting seeds bug, issue #18.
+- Added revertSoftDeletion functionality to both CrudProtein.sol and CrudSeed.sol.
+
 #### 1.2.3 (2022-08-18)
 
 - Naive algorithm now supports \*-wildcard functionality (but works as ?-wildcards, see: https://support.microsoft.com/en-us/office/examples-of-wildcard-characters-939e153f-bd30-47e4-a763-61897c87b3f4)
@@ -8,6 +25,7 @@
 - Helper function queryProtein created and refactored the tasks in hardhat.config.js.
 - Format flag implemented, this allows us to change the return values when querying. Available values are: "protein", "nft", "id", "sequence" and "ipfs".
 - Tasks minimized to: `npx hardhat queryNaive` and `npx hardhat querySemiBlast`. Use the new --format flag to change what results you want.
+- A position and detectable positions counter have been added to the CrudSeed contract.
 
 #### 1.2.2 (2022-08-16)
 

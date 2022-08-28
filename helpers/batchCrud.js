@@ -16,9 +16,9 @@ module.exports = async (contract, file, batchSize, words, callback) => {
   let totalGas = 0;
 
   const callToContract = async (index = 0) => {
-    const insertCall = await callback(contract, index, data, keys);
+    const callToContract = await callback(contract, index, data, keys);
 
-    const receipt = insertCall ? await insertCall.wait() : false;
+    const receipt = callToContract ? await callToContract.wait() : false;
     const gasCost = receipt ? receipt.gasUsed : 0;
     totalGas = totalGas + parseInt(gasCost);
 

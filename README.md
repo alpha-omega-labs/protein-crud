@@ -65,6 +65,16 @@ So, for instance, getting the sequence of the third protein in the returned valu
 - ~~Solidity is not the most optimal when it comes to handling strings. Especially when it comes to larger strings. Therefore ideas like pre-processing the database and storing smaller segments are possible routes to explore to get this working faster (which I'm currently working on).~~ - included since version 1.1.0.
 - ~~The searches are <i>case-sensitive</i> at the moment. This could be solved upon insertion of the proteins (but would discard whether the letters were lower or uppercase) or solved by adding an extra toLowerCase function in Solidity. But then again, Solidity is not optimal for string manipulation and this would degrade performance.~~ - included since version 1.2.2.
 - There's a limitation in Solidity where `memory arrays` can't be dynamic in size. And since we cannot know beforehand how many results a query will have, we temporarily store the results in an array of size n, with n = the total amount of proteins. To prevent returning an array with a bunch of empty values, we copy the query results, in the temporary array, to a smaller sized array in the last line of the <i>naiveQuery</i> function. But, ofcourse this is an extra step, degrading the speed of our queries. More info about this issue can be found in the contract.
+
+## Credits and sources of inspiration
+I've tried to credit everyone else's code by commenting in code whenever this was the case!
+- Hardhat's infrastructure! (https://hardhat.org/)
+- Rob Hitchen's User CRUD (https://bitbucket.org/rhitchens2/soliditycrud/src/master/)
+- Hermes Ateneo's "contains" function (https://github.com/HermesAteneo/solidity-repeated-word-in-string/blob/main/RepeatedWords.sol)
+- Ottodevs' toLowerCase function (https://gist.github.com/ottodevs/c43d0a8b4b891ac2da675f825b1d1dbf) 
+- Comparing strings (https://ethereum.stackexchange.com/questions/30912/how-to-compare-strings-in-solidity)
+- Semi-blast is inspired by the first steps of the Blast algorithm (by reading research papers, lectures, pseudo-code and implementations in other languages by others)
 </br>
 </br>
-- Tousuke (ZEN - https://twitter.com/KeymasterZen)
+
+Tousuke (ZEN - https://twitter.com/KeymasterZen)

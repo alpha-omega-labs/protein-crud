@@ -101,7 +101,7 @@ function number_to_amino(number) {
 function print_result() {    
       for(j = 0; j < length(arr); j++) {
           output_folder = "./seed_size_"seed_size;
-          output_file = output_folder"/seed_"seed_size"_structs_"max"_"indexer"_"j".txt";
+          output_file = output_folder"/seed_"seed_size"_structs_"maxNFT"_"indexer"_"j".txt";
           n = length(arr[j]) - 1;
 
           if(no_sort) {
@@ -140,17 +140,11 @@ function print_result() {
           }
       }
 
-    # }
-    
     delete arr;
     delete seed_positions_count;
     indexer_pointer=0;
     counter = 0;
     indexer++;
-} 
-
-function letter_to_index(lett, ind) {
-    return (base_length)^(seed_size - ind - 1) * l[lett];
 } 
 
 NF{
